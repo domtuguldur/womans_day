@@ -273,6 +273,34 @@ body { background:#060a22; color:var(--white); font-family:'Noto Sans',sans-seri
 footer { padding:28px 24px; text-align:center; border-top:1px solid rgba(255,255,255,.06); font-size:12px; letter-spacing:2px; color:var(--muted); }
 footer strong { color:var(--gold); font-weight:600; }
 
+/* ── WELCOME MODAL ── */
+#welcomeModal {
+  position:fixed; inset:0; z-index:9999;
+  background:linear-gradient(135deg, #0e1660, #060a22);
+  display:flex; flex-direction:column;
+  justify-content:center; align-items:center;
+  opacity:1; transition:opacity 1s ease-out;
+}
+#welcomeModal.hidden { opacity:0; pointer-events:none; }
+.modal-inner { text-align:center; animation:fadeUp .8s ease; }
+.modal-inner h1 {
+  font-family:'DM Serif Display',serif;
+  font-size:clamp(24px,5vw,42px); color:var(--gold);
+  margin-bottom:32px; line-height:1.3;
+}
+#startBtn {
+  padding:16px 44px;
+  background:linear-gradient(135deg,var(--gold),#d4a800);
+  color:#1a1a1a; font-family:'Noto Sans',sans-serif;
+  font-size:16px; font-weight:700; letter-spacing:1.5px;
+  border:none; border-radius:50px; cursor:pointer;
+  box-shadow:0 8px 32px rgba(245,196,0,.4);
+  animation:btnPulse 2s ease-in-out infinite;
+  transition:transform .3s, box-shadow .3s;
+}
+#startBtn:hover { transform:scale(1.08); box-shadow:0 14px 40px rgba(245,196,0,.6); }
+@keyframes btnPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.04)} }
+
 /* ── MUSIC BUTTON ── */
 #musicBtn {
   position:fixed; bottom:24px; right:24px; z-index:999;
@@ -301,7 +329,15 @@ footer strong { color:var(--gold); font-weight:600; }
 </head>
 <body>
 
-<audio id="bgMusic" src="song.mp3" loop preload="auto"></audio>
+<audio id="bgMusic" src="song_eRHOrbRn.mp3" loop preload="auto"></audio>
+
+<!-- Welcome Modal -->
+<div id="welcomeModal">
+  <div class="modal-inner">
+    <h1>🌸 Цэцээ Гүн Rotaract Club 🌸<br>Эмэгтэйчүүдийн Өдрийн мэнд</h1>
+    <button id="startBtn" onclick="startSite()">✨ Эхлүүлэх</button>
+  </div>
+</div>
 
 <canvas id="bg"></canvas>
 <div id="petals-container"></div>
@@ -468,24 +504,16 @@ footer strong { color:var(--gold); font-weight:600; }
 
 <script>
 /* ═══════════════════════════════════
-   BACKGROUND MUSIC
+   MUSIC + WELCOME MODAL
 ═══════════════════════════════════ */
 const music = document.getElementById('bgMusic');
 const musicBtn = document.getElementById('musicBtn');
 music.volume = 0.4;
 
-function tryPlay() {
-  music.play().then(() => {
-    musicBtn.textContent = '🔊';
-  }).catch(() => {
-    // Autoplay blocked — wait for first interaction
-    document.addEventListener('click', () => {
-      music.play();
-      musicBtn.textContent = '🔊';
-    }, { once: true });
-  });
+function startSite() {
+  document.getElementById('welcomeModal').classList.add('hidden');
+  music.play().then(() => { musicBtn.textContent = '🔊'; }).catch(() => {});
 }
-tryPlay();
 
 function toggleMusic() {
   if (music.paused) {
