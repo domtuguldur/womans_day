@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Олон Улсын Эмэгтэйчүүдийн Өдөр 2025 — Цэцээ Гүн Rotaract Club</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Noto+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Noto+Serif:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:  #1a237e;
+  --cyan:  #29b6e8;
+  --gold:  #f5c400;
+  --gold2: #ffe066;
+  --rose:  #f48fb1;
+  --white: #ffffff;
+  --soft:  rgba(255,255,255,0.82);
+  --muted: rgba(255,255,255,0.55);
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html, body { height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+body { background:#060a22; color:var(--white); font-family:'Noto Sans',sans-serif; }
+
+/* ── CANVAS ── */
+#bg { position:fixed; inset:0; z-index:0; pointer-events:none; }
+
+/* ── PETALS ── */
+.petal {
+  position:fixed; pointer-events:none; z-index:3;
+  animation: petalFall linear infinite;
+  filter:drop-shadow(0 2px 6px rgba(244,143,177,.5));
+}
+@keyframes petalFall {
+  0%  { transform:translateY(-60px) rotate(0deg)   translateX(0);    opacity:.9; }
+  50% { transform:translateY(50vh)  rotate(180deg) translateX(30px); opacity:.7; }
+  100%{ transform:translateY(110vh) rotate(360deg) translateX(-20px);opacity:0;  }
+}
+
+/* ══════════════════════════════════════════
+   TWO-PAGE SLIDE SYSTEM
+══════════════════════════════════════════ */
+#page1, #page2 {
+  position:fixed; inset:0; overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+  will-change:transform,opacity;
+  transition: transform .95s cubic-bezier(.76,0,.24,1),
+              opacity   .95s cubic-bezier(.76,0,.24,1);
+}
+/* Page 1 visible */
+#page1 { 
+  overflow-y:hidden; transform:translateY(0); opacity:1; z-index:10; }
+#page1.exit { transform:translateY(-100%); opacity:0; pointer-events:none; }
+/* Page 2 hidden below */
+#page2 { 
+  overflow-y:auto;transform:translateY(105%); opacity:0; z-index:9; }
+#page2.enter { transform:translateY(0); opacity:1; }
+
+/* ── BACK BUTTON ── */
+.back-btn {
+  position:fixed; top:18px; left:20px; z-index:999;
+  display:flex; align-items:center; gap:8px;
+  padding:9px 22px;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:50px;
+  color:var(--white); font-family:'Noto Sans',sans-serif;
+  font-size:13px; font-weight:500; cursor:pointer;
+  backdrop-filter:blur(14px);
+  opacity:0; pointer-events:none;
+  transform:translateY(-10px);
+  transition:opacity .5s ease .3s, transform .5s ease .3s,
+             background .3s, border-color .3s, color .3s;
+}
+.back-btn.show { opacity:1; pointer-events:all; transform:translateY(0); }
+.back-btn:hover { background:rgba(245,196,0,.15); border-color:rgba(245,196,0,.45); color:var(--gold); }
+
+/* ── PAGE FLASH ── */
+.flash {
+  position:fixed; inset:0; pointer-events:none; z-index:50;
+  background:radial-gradient(ellipse at 50% 50%, rgba(244,143,177,.22), transparent 65%);
+  opacity:0; transition:opacity .35s ease;
+}
+.flash.on { opacity:1; }
+
+/* ══════════════════════════════════════════
+   PAGE 1 — HERO
+══════════════════════════════════════════ */
+.p1-inner { position:relative; z-index:1; }
+
+.ribbon {
+  background:linear-gradient(90deg,var(--navy),#2a3a9e 50%,var(--navy));
+  padding:10px 20px; text-align:center;
+  font-size:12px; font-weight:600; letter-spacing:3px;
+  color:var(--gold); text-transform:uppercase;
+  border-bottom:1px solid rgba(245,196,0,.3);
+}
+
+.hero {
+  min-height:100vh; display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  text-align:center; padding:80px 24px 60px; position:relative;
+}
+
+.ghost-date {
+  position:absolute;
+  font-family:'DM Serif Display',serif;
+  font-size:clamp(120px,25vw,280px); font-weight:400;
+  color:transparent;
+  -webkit-text-stroke:1px rgba(245,196,0,.07);
+  top:50%; left:50%; transform:translate(-50%,-48%);
+  pointer-events:none; white-space:nowrap;
+  letter-spacing:-8px; user-select:none;
+}
+
+/* orbs */
+.orb { position:absolute; border-radius:50%; filter:blur(80px); pointer-events:none; opacity:.17; }
+.orb1 { width:500px;height:500px; background:radial-gradient(circle,#f48fb1,transparent); top:-100px;left:-100px; }
+.orb2 { width:400px;height:400px; background:radial-gradient(circle,#29b6e8,transparent); bottom:-80px;right:-80px; }
+.orb3 { width:300px;height:300px; background:radial-gradient(circle,var(--gold),transparent); top:40%;left:50%;transform:translate(-50%,-50%); opacity:.09; }
+
+/* logo ring */
+.logo-ring {
+  position:relative; width:150px; height:150px; margin-bottom:36px;
+  animation:floatLogo 4s ease-in-out infinite;
+}
+@keyframes floatLogo { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+.logo-ring::before {
+  content:''; position:absolute; inset:-6px; border-radius:50%;
+  background:conic-gradient(var(--gold),var(--rose),var(--cyan),var(--gold));
+  animation:spinRing 6s linear infinite; z-index:0;
+}
+@keyframes spinRing { to{transform:rotate(360deg)} }
+.logo-ring img {
+  width:100%; height:100%; border-radius:50%; object-fit:cover;
+  border:4px solid #060a22; position:relative; z-index:1;
+}
+
+/* club badge */
+.club-badge {
+  display:inline-flex; align-items:center; gap:8px;
+  background:rgba(245,196,0,.11); border:1px solid rgba(245,196,0,.32);
+  border-radius:50px; padding:6px 18px;
+  font-size:12px; font-weight:600; letter-spacing:3px;
+  color:var(--gold); text-transform:uppercase;
+  margin-bottom:24px;
+  opacity:0; animation:fadeUp .8s ease forwards .2s;
+}
+.dot { width:6px;height:6px; background:var(--gold); border-radius:50%; animation:blink 2s ease-in-out infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+.hero-title {
+  font-family:'DM Serif Display',serif;
+  font-size:clamp(38px,8vw,88px); font-weight:400; line-height:1.05;
+  margin-bottom:10px; opacity:0; animation:fadeUp .9s ease forwards .5s;
+}
+.hero-title .t1 {
+  display:block;
+  background:linear-gradient(135deg,var(--gold) 0%,var(--gold2) 40%,#e6a800 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.hero-title .t2 {
+  display:block; color:var(--white); font-style:italic;
+  font-size:.52em; letter-spacing:1px; margin-top:6px;
+}
+
+.date-line {
+  font-size:13px; font-weight:500; letter-spacing:5px;
+  color:var(--cyan); text-transform:uppercase;
+  margin-bottom:28px; opacity:0; animation:fadeUp .8s ease forwards .7s;
+}
+
+.hero-desc {
+  font-size:clamp(15px,2.2vw,19px); font-weight:300; color:var(--soft);
+  line-height:1.85; max-width:600px; margin-bottom:44px;
+  opacity:0; animation:fadeUp .9s ease forwards .9s;
+}
+
+.hero-btn {
+  display:inline-flex; align-items:center; gap:10px;
+  padding:16px 44px;
+  background:linear-gradient(135deg,var(--gold),#d4a800);
+  color:#1a1a1a; font-family:'Noto Sans',sans-serif;
+  font-size:15px; font-weight:700; letter-spacing:1.5px;
+  border:none; border-radius:50px; cursor:pointer;
+  box-shadow:0 8px 32px rgba(245,196,0,.38);
+  opacity:0; animation:fadeUp .8s ease forwards 1.1s;
+  transition:transform .3s, box-shadow .3s;
+}
+.hero-btn:hover { transform:translateY(-4px); box-shadow:0 16px 44px rgba(245,196,0,.55); }
+
+.flower-strip {
+  display:flex; gap:14px; justify-content:center; padding-top:48px;
+  opacity:0; animation:fadeIn 1.2s ease forwards 1.4s;
+}
+.fl { font-size:26px; animation:swing 3s ease-in-out infinite; }
+.fl:nth-child(1){animation-delay:0s} .fl:nth-child(2){animation-delay:.25s}
+.fl:nth-child(3){animation-delay:.5s} .fl:nth-child(4){animation-delay:.75s}
+.fl:nth-child(5){animation-delay:1s}  .fl:nth-child(6){animation-delay:1.25s}
+.fl:nth-child(7){animation-delay:1.5s}
+@keyframes swing { 0%,100%{transform:rotate(-10deg) scale(1)} 50%{transform:rotate(10deg) scale(1.1)} }
+
+/* ══════════════════════════════════════════
+   PAGE 2 — CONTENT
+══════════════════════════════════════════ */
+.p2-inner { position:relative; z-index:1; }
+
+/* top bar on page 2 */
+.p2-topbar {
+  background:linear-gradient(90deg,var(--navy),#2a3a9e 50%,var(--navy));
+  padding:12px 24px; display:flex; align-items:center;
+  justify-content:center; gap:12px;
+  border-bottom:1px solid rgba(245,196,0,.25);
+  position:sticky; top:0; z-index:100;
+}
+.p2-topbar-logo { width:34px; height:34px; border-radius:50%; overflow:hidden; border:1.5px solid var(--gold); }
+.p2-topbar-logo img { width:100%; height:100%; object-fit:cover; }
+.p2-topbar-name {
+  font-family:'DM Serif Display',serif; font-size:15px; color:var(--gold); letter-spacing:1px;
+}
+.p2-topbar-sub { font-size:10px; letter-spacing:3px; color:var(--cyan); text-transform:uppercase; font-weight:600; }
+
+/* Section helpers */
+.section { padding:90px 24px; }
+.section.alt {
+  background:linear-gradient(180deg,rgba(255,255,255,.025) 0%,rgba(255,255,255,.01) 100%);
+  border-top:1px solid rgba(255,255,255,.06);
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.container { max-width:1080px; margin:0 auto; }
+.sec-label { font-size:11px; font-weight:700; letter-spacing:5px; color:var(--rose); text-transform:uppercase; text-align:center; margin-bottom:14px; }
+.sec-title { font-family:'DM Serif Display',serif; font-size:clamp(28px,5vw,52px); font-weight:400; text-align:center; margin-bottom:16px; line-height:1.15; }
+.sec-title .grd { background:linear-gradient(135deg,var(--gold),var(--cyan)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.sec-sub { text-align:center; font-size:16px; color:var(--muted); max-width:560px; margin:0 auto 56px; line-height:1.7; font-weight:300; }
+
+/* quote */
+.quote-wrap { text-align:center; padding:80px 24px; position:relative; }
+.quote-wrap::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at 50% 0%,rgba(244,143,177,.08),transparent 65%); }
+.big-q { font-family:'DM Serif Display',serif; font-size:140px; line-height:.4; color:rgba(244,143,177,.1); display:block; margin-bottom:10px; }
+.quote-text { font-family:'DM Serif Display',serif; font-size:clamp(20px,3.5vw,36px); font-style:italic; line-height:1.55; max-width:780px; margin:0 auto 20px; position:relative; }
+.quote-source { font-size:13px; letter-spacing:4px; color:var(--gold); text-transform:uppercase; font-weight:600; position:relative; }
+
+/* wishes */
+.wishes-stack { display:flex; flex-direction:column; gap:28px; max-width:720px; margin:0 auto; }
+.wish { display:grid; grid-template-columns:64px 1fr; gap:20px; align-items:start; opacity:0; transform:translateX(-24px); }
+.wish.vis { opacity:1; transform:translateX(0); transition:opacity .65s ease,transform .65s ease; }
+.wish-num { font-family:'DM Serif Display',serif; font-size:52px; color:rgba(244,143,177,.18); line-height:1; text-align:right; }
+.wish-body h3 { font-family:'DM Serif Display',serif; font-size:22px; color:var(--gold); margin-bottom:8px; line-height:1.2; }
+.wish-body p { font-size:15px; line-height:1.8; color:rgba(255,255,255,.72); }
+
+/* fancy divider */
+.fancy-div { display:flex; align-items:center; gap:16px; max-width:400px; margin:0 auto 60px; }
+.fdl { flex:1; height:1px; background:linear-gradient(90deg,transparent,rgba(244,143,177,.4)); }
+.fdr { flex:1; height:1px; background:linear-gradient(90deg,rgba(244,143,177,.4),transparent); }
+.fdi { font-size:20px; }
+
+/* pledge */
+.pledge {
+  background:linear-gradient(135deg,rgba(26,35,126,.6),rgba(13,20,80,.8));
+  border:1px solid rgba(245,196,0,.2); border-radius:28px;
+  padding:64px 40px; text-align:center; position:relative; overflow:hidden;
+  max-width:800px; margin:0 auto;
+}
+.pledge::before { content:''; position:absolute; top:-80px; left:50%; transform:translateX(-50%); width:400px; height:400px; background:radial-gradient(circle,rgba(245,196,0,.08),transparent 65%); pointer-events:none; }
+.pledge-title { font-family:'DM Serif Display',serif; font-size:clamp(26px,5vw,48px); font-style:italic; line-height:1.25; margin-bottom:20px; }
+.pledge-title em { background:linear-gradient(135deg,var(--gold),var(--gold2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; font-style:normal; }
+.pledge-text { font-size:16px; color:var(--soft); line-height:1.8; margin-bottom:36px; font-weight:300; }
+.pledge-sig { display:flex; flex-direction:column; align-items:center; gap:12px; }
+.sig-img { width:72px; height:72px; border-radius:50%; overflow:hidden; border:2px solid var(--gold); box-shadow:0 0 20px rgba(245,196,0,.25); }
+.sig-img img { width:100%; height:100%; object-fit:cover; }
+.sig-club { font-family:'DM Serif Display',serif; font-size:20px; color:var(--gold); letter-spacing:2px; }
+.sig-sub { font-size:12px; letter-spacing:4px; color:var(--cyan); text-transform:uppercase; font-weight:600; }
+
+/* footer */
+footer { padding:28px 24px; text-align:center; border-top:1px solid rgba(255,255,255,.06); font-size:12px; letter-spacing:2px; color:var(--muted); }
+footer strong { color:var(--gold); font-weight:600; }
+
+/* ── MUSIC BUTTON ── */
+#musicBtn {
+  position:fixed; bottom:24px; right:24px; z-index:999;
+  width:46px; height:46px; border-radius:50%;
+  background:rgba(245,196,0,.15);
+  border:1px solid rgba(245,196,0,.4);
+  color:var(--gold); font-size:18px;
+  cursor:pointer; backdrop-filter:blur(12px);
+  transition:all .3s; display:flex;
+  align-items:center; justify-content:center;
+}
+#musicBtn:hover { background:rgba(245,196,0,.28); transform:scale(1.1); }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp  { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeIn  { from{opacity:0} to{opacity:1} }
+
+/* ── RESPONSIVE ── */
+@media(max-width:600px) {
+  .wish { grid-template-columns:44px 1fr; }
+  .wish-num { font-size:36px; }
+  .pledge { padding:44px 24px; }
+  .back-btn { padding:8px 14px; font-size:12px; }
+}
+</style>
+</head>
+<body>
+
+<audio id="bgMusic" src="song.mp3" loop preload="auto"></audio>
+
+<canvas id="bg"></canvas>
+<div id="petals-container"></div>
+<div class="flash" id="flash"></div>
+
+<!-- Music toggle button -->
+<button id="musicBtn" onclick="toggleMusic()" title="Дуу">🔊</button>
+
+<!-- ════════════════ BACK BUTTON ════════════════ -->
+<button class="back-btn" id="backBtn" onclick="goBack()">← Буцах</button>
+
+<!-- ════════════════ PAGE 1 — HERO ════════════════ -->
+<div id="page1">
+  <div class="p1-inner">
+
+    <div class="ribbon">🌸 Rotaract Club · Цэцээ Гүн · Улаанбаатар · 2025 🌸</div>
+
+    <section class="hero">
+      <div class="orb orb1"></div>
+      <div class="orb orb2"></div>
+      <div class="orb orb3"></div>
+      <div class="ghost-date">3.8</div>
+
+      <div class="logo-ring">
+        <img src="logo.jpg" alt="Цэцээ Гүн Rotaract Club">
+      </div>
+
+      <div class="club-badge">
+        <span class="dot"></span>
+        Цэцээ Гүн ротаракт клуб
+      </div>
+
+      <h1 class="hero-title">
+        <span class="t1">Эмэгтэйчүүдийн</span>
+        <span class="t2">Эрхийг хамгаалах Өдөр — 3-р сарын 8</span>
+      </h1>
+
+      <div class="date-line">2025 · Улаанбаатар · Монгол Улс</div>
+
+      <p class="hero-desc">
+        Цэцээ Гүн Rotaract клубын бүх эмэгтэй гишүүд маань
+        энэхүү өдрийг дурсамж дүүрэн сайхан тэмдэглээрэ.
+        <br><strong style="color:var(--gold)">Буян буцахдаа бороо шиг асгараг.</strong>
+      </p>
+
+      <button class="hero-btn" onclick="goToPage2()">✨ Мэндчилгээ үзэх</button>
+
+      <div class="flower-strip">
+        <span class="fl">🌸</span><span class="fl">🌺</span><span class="fl">🌷</span>
+        <span class="fl">💐</span><span class="fl">🌼</span><span class="fl">🌺</span>
+        <span class="fl">🌸</span>
+      </div>
+    </section>
+
+  </div><!-- p1-inner -->
+</div><!-- page1 -->
+
+<!-- ════════════════ PAGE 2 — CONTENT ════════════════ -->
+<div id="page2">
+  <div class="p2-inner">
+
+    <!-- sticky top bar -->
+    <div class="p2-topbar">
+      <div class="p2-topbar-logo">
+        <img src="logo.jpg" alt="Logo">
+      </div>
+      <div>
+        <div class="p2-topbar-name">Rotaract Club Of Tsetsee Gung</div>
+        <div class="p2-topbar-sub">Олон Улсын Эмэгтэйчүүдийн Өдөр · 3-р сарын 8</div>
+      </div>
+    </div>
+
+    <!-- QUOTE -->
+    <div class="quote-wrap">
+      <span class="big-q">"</span>
+      <p class="quote-text">
+        Эмэгтэй хүн нийгмийн хамгийн хүчирхэг хөдөлгөгч хүч —
+        тэрхүү хүчийг Rotaract-ийн оюун ухаан, нэгдмэл зориг хамт дагуулна.
+      </p>
+      <p class="quote-source">—Rotaract Club Of Tsetsee Gung</p>
+    </div>
+
+    <!-- WISHES -->
+    <section class="section alt" id="wishes">
+      <div class="container">
+        <div class="sec-label">3-р сарын 8</div>
+        <h2 class="sec-title">Цэцээ Гүн клубаас <span class="grd">мэндчилгээ</span></h2>
+        <p class="sec-sub">Клубын эрэгтэйчүүд бидний зүгээс бүх эмэгтэй гишүүддээ баярын халуун дулаан мэндчилгээг хүргэе.</p>
+        <div class="fancy-div">
+          <div class="fdl"></div><span class="fdi">🌸</span><div class="fdr"></div>
+        </div>
+        <div class="wishes-stack">
+          <div class="wish">
+            <div class="wish-num">01</div>
+            <div class="wish-body">
+              <h3>💛 Манлайлагч эмэгтэйчүүд</h3>
+              <p>Rotaract-ийн гишүүн эмэгтэйчүүд та нар зөвхөн клубынхаа манлайлагч биш — нийгмийн манлайлагч. Хурал дээр ч, гудамжинд ч, гэртээ ч та нарын дуу хоолой чухал.</p>
+            </div>
+          </div>
+          <div class="wish">
+            <div class="wish-num">02</div>
+            <div class="wish-body">
+              <h3>🌸 Нийгэмд тус бологч хүч</h3>
+              <p>Та нар Rotaract-ийн "Service Above Self" зарчмаар өдөр бүр нийгэмдээ тус болдог. Тэрхүү үйлчлэлийн зориг нь та нарыг хэзээд гялалзуулдаг.</p>
+            </div>
+          </div>
+          <div class="wish">
+            <div class="wish-num">03</div>
+            <div class="wish-body">
+              <h3>🚀 Мэргэжлийн шат дэвших</h3>
+              <p>Та нарын зорилго, мөрөөдөл биелэх болтугай. Rotaract клуб нь та нарын мэргэжлийн замыг дэмжих, туршлага хуримтлуулах хамгийн найдвартай нэгдэл юм.</p>
+            </div>
+          </div>
+          <div class="wish">
+            <div class="wish-num">04</div>
+            <div class="wish-body">
+              <h3>🌍 Дэлхий нийтийн иргэн</h3>
+              <p>175+ орны Rotaract гишүүдтэй нэгдсэн та нар дэлхийн эмэгтэйчүүдийн нэгдмэл хүчний нэг хэсэг. Энэ өдөр дэлхий дахинаа та нарыг баярлаж байна!</p>
+            </div>
+          </div>
+          <div class="wish">
+            <div class="wish-num">05</div>
+            <div class="wish-body">
+              <h3>💐 Хайр халуун дулаан</h3>
+              <p>Гэр бүлдээ, хамт олондоо, нийгэмдээ — та нарын цацаж буй хайр, дулаан энэрэл нь хамгийн том баялаг. Баяр хүргэе, эрхэм охид!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PLEDGE -->
+    <section class="section">
+      <div class="container">
+        <div class="pledge">
+          <h2 class="pledge-title">
+            Баяр хүргэе,<br>
+            <em>Цэцээ Гүн клубын охид аа!</em>
+          </h2>
+          <p class="pledge-text">
+            Та нар нийгэмдээ үйлчилж, манлайлж, хөгжиж байгаа Rotaract-ийн гялалзсан одод.
+            Өнөөдөр болон ирэх бүх өдрүүдэд Цэцээ Гүн клуб та нарын хамт байна.
+            <br><br>
+            <strong style="color:var(--gold)">People of Action — Үйлдлийн хүмүүс!</strong>
+          </p>
+          <div class="pledge-sig">
+            <div class="sig-img">
+              <img src="logo.jpg" alt="Лого">
+            </div>
+            <div class="sig-club">ЦЭЦЭЭ ГҮН</div>
+            <div class="sig-sub">Rotaract Club · Улаанбаатар · District 3450</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      © 2025 <strong>Цэцээ Гүн Rotaract Club</strong> · Олон Улсын Эмэгтэйчүүдийн Өдөр · 3-р сарын 8
+      <br><span style="color:rgba(255,255,255,.3);font-size:11px;">Service Above Self · People of Action</span>
+    </footer>
+
+  </div><!-- p2-inner -->
+</div><!-- page2 -->
+
+<script>
+/* ═══════════════════════════════════
+   BACKGROUND MUSIC
+═══════════════════════════════════ */
+const music = document.getElementById('bgMusic');
+const musicBtn = document.getElementById('musicBtn');
+music.volume = 0.4;
+
+function tryPlay() {
+  music.play().then(() => {
+    musicBtn.textContent = '🔊';
+  }).catch(() => {
+    // Autoplay blocked — wait for first interaction
+    document.addEventListener('click', () => {
+      music.play();
+      musicBtn.textContent = '🔊';
+    }, { once: true });
+  });
+}
+tryPlay();
+
+function toggleMusic() {
+  if (music.paused) {
+    music.play();
+    musicBtn.textContent = '🔊';
+  } else {
+    music.pause();
+    musicBtn.textContent = '🔇';
+  }
+}
+
+/* ═══════════════════════════════════
+   PAGE TRANSITIONS
+═══════════════════════════════════ */
+const p1   = document.getElementById('page1');
+const p2   = document.getElementById('page2');
+const backBtn = document.getElementById('backBtn');
+const flash = document.getElementById('flash');
+let onPage2 = false;
+
+function goToPage2() {
+  if (onPage2) return;
+  onPage2 = true;
+  flash.classList.add('on');
+  setTimeout(() => flash.classList.remove('on'), 350);
+  p1.classList.add('exit');
+  p2.classList.add('enter');
+  backBtn.classList.add('show');
+  setTimeout(() => { p2.scrollTop = 0; }, 200);
+}
+
+function goBack() {
+  if (!onPage2) return;
+  onPage2 = false;
+  flash.classList.add('on');
+  setTimeout(() => flash.classList.remove('on'), 350);
+  p1.classList.remove('exit');
+  p2.classList.remove('enter');
+  backBtn.classList.remove('show');
+  setTimeout(() => { p1.scrollTop = 0; }, 200);
+}
+
+/* ═══════════════════════════════════
+   CANVAS STARFIELD
+═══════════════════════════════════ */
+const canvas = document.getElementById('bg');
+const ctx = canvas.getContext('2d');
+let W, H, pts = [];
+
+function resize() {
+  W = canvas.width  = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+  pts = [];
+  for (let i = 0; i < 200; i++) {
+    pts.push({
+      x: Math.random()*W, y: Math.random()*H,
+      r: Math.random()*1.4+.2,
+      phase: Math.random()*Math.PI*2,
+      spd: Math.random()*.004+.002,
+      col: Math.random()>.7 ? [244,143,177] : Math.random()>.5 ? [41,182,232] : [255,255,255]
+    });
+  }
+}
+
+function drawBg() {
+  ctx.clearRect(0,0,W,H);
+  const g = ctx.createRadialGradient(W*.5,H*.3,0,W*.5,H*.5,Math.max(W,H)*.9);
+  g.addColorStop(0,'#0e1660'); g.addColorStop(.4,'#080c3a'); g.addColorStop(1,'#03051a');
+  ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+  const a = ctx.createLinearGradient(0,0,W,H*.6);
+  a.addColorStop(0,'rgba(244,143,177,.04)'); a.addColorStop(.5,'rgba(41,182,232,.03)'); a.addColorStop(1,'transparent');
+  ctx.fillStyle=a; ctx.fillRect(0,0,W,H);
+  const t = Date.now()*.001;
+  pts.forEach(p => {
+    const alpha = (Math.sin(t*p.spd*60+p.phase)+1)*.4+.1;
+    ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(${p.col[0]},${p.col[1]},${p.col[2]},${alpha*.6})`; ctx.fill();
+  });
+  requestAnimationFrame(drawBg);
+}
+resize(); drawBg();
+window.addEventListener('resize', resize);
+
+/* ═══════════════════════════════════
+   FALLING PETALS
+═══════════════════════════════════ */
+const PC = document.getElementById('petals-container');
+const PE = ['🌸','🌺','🌷','💮','🌼'];
+function mkPetal() {
+  const d = document.createElement('div');
+  d.className='petal';
+  d.textContent=PE[Math.floor(Math.random()*PE.length)];
+  d.style.left=Math.random()*100+'vw';
+  d.style.fontSize=(11+Math.random()*14)+'px';
+  const dur=7+Math.random()*9;
+  d.style.animationDuration=dur+'s';
+  d.style.animationDelay=Math.random()*3+'s';
+  PC.appendChild(d);
+  setTimeout(()=>d.remove(),(dur+3)*1000);
+}
+setInterval(mkPetal,600);
+for(let i=0;i<10;i++) mkPetal();
+
+/* ═══════════════════════════════════
+   SCROLL REVEAL (page 2)
+═══════════════════════════════════ */
+const io = new IntersectionObserver(entries => {
+  entries.forEach((e,i) => {
+    if (e.isIntersecting) setTimeout(()=>e.target.classList.add('vis'), i*110);
+  });
+}, { threshold:.12, root: p2 });
+document.querySelectorAll('.val-card,.pillar,.wish').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
